@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{page_title}} | {{site_title}}</title>
+    <meta name="description" content="{{description}}" />
+    <link rel="stylesheet" href="/assets/style.css" />
+    {{head_extra}}
+</head>
+<body>
+    <div class="aurora-bg"></div>
+    <header class="site-header">
+        <a class="brand" href="/">{{site_title}}</a>
+        <nav class="nav-links">
+            {{nav}}
+        </nav>
+        <button type="button" class="theme-toggle" data-theme-toggle>Palette</button>
+    </header>
+    <main class="page-shell">
+        {{content}}
+    </main>
+    <footer class="site-footer">
+        <span>{{year}} {{site_title}}</span>
+    </footer>
+    {{body_extra}}
+</body>
+</html>

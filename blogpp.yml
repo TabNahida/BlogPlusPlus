@@ -1,0 +1,20 @@
+title: BlogPlusPlus
+description: A modern C++ blog framework with static export and built-in server mode.
+base_url: http://localhost:4000
+theme: aurora
+output: public
+plugins: tags, archives, rss, search, sitemap, math, comments, forum, cloud
+server_plugins: forum_api
+nav: Home:/, Archives:/archives/, Tags:/tags/, Search:/search/, Forum:/forum/, Cloud:/cloud/
+theme_palettes: ocean, sunset, forest
+background_image:
+server_cache_mb: 32
+comments_provider: giscus
+comments_giscus_repo:
+comments_giscus_repo_id:
+comments_giscus_category: Announcements
+comments_giscus_category_id:
+comments_disqus_shortname:
+cloud_provider: s3
+cloud_bucket:
+cloud_public_prefix:
