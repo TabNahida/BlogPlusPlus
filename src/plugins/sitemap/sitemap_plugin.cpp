@@ -1,4 +1,4 @@
-#include "plugins/sitemap_plugin.h"
+#include "plugins/sitemap/sitemap_plugin.h"
 
 #include "core/site_builder.h"
 #include "core/utils.h"
@@ -36,4 +36,3 @@ void SitemapPlugin::apply(SiteBuilder& builder) {
 }
 
 }  // namespace blogpp
-

@@ -1,4 +1,4 @@
-#include "plugins/cloud_plugin.h"
+#include "plugins/cloud/cloud_plugin.h"
 
 #include "core/site_builder.h"
 #include "core/utils.h"

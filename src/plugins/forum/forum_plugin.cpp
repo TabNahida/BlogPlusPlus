@@ -1,4 +1,4 @@
-#include "plugins/forum_plugin.h"
+#include "plugins/forum/forum_plugin.h"
 
 #include "core/site_builder.h"
 #include "core/utils.h"

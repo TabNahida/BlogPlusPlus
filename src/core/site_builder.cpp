@@ -4,37 +4,7 @@
 #include "core/http_server.h"
 #include "core/utils.h"
 #include "plugins/plugin.h"
-
-#if BLOGPP_BUILD_PLUGIN_ARCHIVES
-#include "plugins/archive_plugin.h"
-#endif
-#if BLOGPP_BUILD_PLUGIN_RSS
-#include "plugins/rss_plugin.h"
-#endif
-#if BLOGPP_BUILD_PLUGIN_SEARCH
-#include "plugins/search_plugin.h"
-#endif
-#if BLOGPP_BUILD_PLUGIN_SITEMAP
-#include "plugins/sitemap_plugin.h"
-#endif
-#if BLOGPP_BUILD_PLUGIN_TAGS
-#include "plugins/tag_plugin.h"
-#endif
-#if BLOGPP_BUILD_PLUGIN_COMMENTS
-#include "plugins/comments_plugin.h"
-#endif
-#if BLOGPP_BUILD_PLUGIN_MATH
-#include "plugins/math_plugin.h"
-#endif
-#if BLOGPP_BUILD_PLUGIN_FORUM
-#include "plugins/forum_plugin.h"
-#endif
-#if BLOGPP_BUILD_PLUGIN_CLOUD
-#include "plugins/cloud_plugin.h"
-#endif
-#if BLOGPP_BUILD_SERVER_PLUGIN_FORUM_API
-#include "plugins/forum_api_plugin.h"
-#endif
+#include "plugins/plugin_registry.h"
 
 #include <algorithm>
 #include <filesystem>
@@ -348,34 +318,7 @@ void SiteBuilder::run_static_plugins() {
         enabled.insert(to_lower(name));
     }
 
-    std::vector<std::unique_ptr<Plugin>> plugins;
-#if BLOGPP_BUILD_PLUGIN_TAGS
-    plugins.emplace_back(std::make_unique<TagPlugin>());
-#endif
-#if BLOGPP_BUILD_PLUGIN_ARCHIVES
-    plugins.emplace_back(std::make_unique<ArchivePlugin>());
-#endif
-#if BLOGPP_BUILD_PLUGIN_RSS
-    plugins.emplace_back(std::make_unique<RssPlugin>());
-#endif
-#if BLOGPP_BUILD_PLUGIN_SEARCH
-    plugins.emplace_back(std::make_unique<SearchPlugin>());
-#endif
-#if BLOGPP_BUILD_PLUGIN_SITEMAP
-    plugins.emplace_back(std::make_unique<SitemapPlugin>());
-#endif
-#if BLOGPP_BUILD_PLUGIN_FORUM
-    plugins.emplace_back(std::make_unique<ForumPlugin>());
-#endif
-#if BLOGPP_BUILD_PLUGIN_CLOUD
-    plugins.emplace_back(std::make_unique<CloudPlugin>());
-#endif
-#if BLOGPP_BUILD_PLUGIN_MATH
-    plugins.emplace_back(std::make_unique<MathPlugin>());
-#endif
-#if BLOGPP_BUILD_PLUGIN_COMMENTS
-    plugins.emplace_back(std::make_unique<CommentsPlugin>());
-#endif
+    auto plugins = create_static_plugins();
 
     for (auto& plugin : plugins) {
         if (enabled.find(to_lower(plugin->name())) == enabled.end()) {
@@ -391,12 +334,16 @@ std::vector<std::unique_ptr<ServerPlugin>> SiteBuilder::build_server_plugins() c
         enabled.insert(to_lower(name));
     }
 
-    std::vector<std::unique_ptr<ServerPlugin>> plugins;
-#if BLOGPP_BUILD_SERVER_PLUGIN_FORUM_API
-    if (enabled.find("forum_api") != enabled.end()) {
-        plugins.emplace_back(std::make_unique<ForumApiPlugin>());
-    }
-#endif
+    auto plugins = create_server_plugins();
+    plugins.erase(std::remove_if(plugins.begin(),
+                                 plugins.end(),
+                                 [&](const std::unique_ptr<ServerPlugin>& plugin) {
+                                     if (!plugin) {
+                                         return true;
+                                     }
+                                     return enabled.find(to_lower(plugin->name())) == enabled.end();
+                                 }),
+                  plugins.end());
     return plugins;
 }
 
@@ -444,7 +391,9 @@ void SiteBuilder::copy_theme_assets() const {
         if (!entry.is_regular_file()) {
             continue;
         }
-        if (to_lower(entry.path().extension().string()) == ".html") {
+        const auto ext = to_lower(entry.path().extension().string());
+        if (ext == ".html" || ext == ".cpp" || ext == ".cc" || ext == ".cxx" || ext == ".h" ||
+            ext == ".hpp" || ext == ".lua") {
             continue;
         }
         std::error_code ec;

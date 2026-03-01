@@ -1,4 +1,4 @@
-#include "plugins/tag_plugin.h"
+#include "plugins/tags/tag_plugin.h"
 
 #include "core/site_builder.h"
 #include "core/utils.h"
@@ -65,4 +65,3 @@ void TagPlugin::apply(SiteBuilder& builder) {
 }
 
 }  // namespace blogpp
-

@@ -1,4 +1,4 @@
-#include "plugins/search_plugin.h"
+#include "plugins/search/search_plugin.h"
 
 #include "core/site_builder.h"
 #include "core/utils.h"

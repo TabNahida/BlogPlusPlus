@@ -140,6 +140,12 @@ h3 {
     color: var(--muted);
 }
 
+.post-insight {
+    color: var(--accent);
+    margin: 0.4em 0 0.1em;
+    font-size: 0.88rem;
+}
+
 .stack {
     display: grid;
     gap: 14px;

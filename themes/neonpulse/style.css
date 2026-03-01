@@ -182,6 +182,27 @@ body {
     font-size: 0.9rem;
 }
 
+.post-insight {
+    color: var(--accent);
+    font-size: 0.86rem;
+    margin: 0.35em 0 0.1em;
+}
+
+.runtime-chip {
+    display: inline-flex;
+    gap: 8px;
+    align-items: baseline;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 5px 12px;
+    color: var(--accent);
+    font-size: 0.82rem;
+}
+
+.runtime-chip strong {
+    color: var(--text);
+}
+
 .summary {
     color: color-mix(in srgb, var(--text), var(--muted) 30%);
 }

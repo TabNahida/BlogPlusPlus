@@ -35,7 +35,9 @@ std::unordered_map<std::string, std::string> fallback_templates() {
 
 bool ThemeEngine::load(const fs::path& theme_dir) {
     dir_ = theme_dir;
+    theme_name_ = to_lower(theme_dir.filename().string());
     templates_ = fallback_templates();
+    extensions_ = ThemeRenderRegistry::instance().create_for_theme(theme_name_);
 
     if (!fs::exists(theme_dir)) {
         return false;
@@ -73,6 +75,14 @@ std::string ThemeEngine::render(const std::string& template_name,
             break;
         }
         content.erase(pos, end - pos + 2);
+    }
+
+    ThemeRenderContext render_context{theme_name_, template_name, context};
+    for (const auto& extension : extensions_) {
+        if (!extension) {
+            continue;
+        }
+        extension->apply(render_context, content);
     }
     return content;
 }

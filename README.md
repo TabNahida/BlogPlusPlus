@@ -7,6 +7,7 @@ A modern C++ blog framework (XMake-based) with:
 - Build-time feature toggles for plugins
 - Static plugins + server plugins
 - Multi-theme rendering with palette switching and background image support
+- C++ template runtime extension points (EJS-like logic via standalone C++ files)
 
 ## Features
 
@@ -72,6 +73,30 @@ xmake f --plugin_cloud=n --plugin_forum=n
 # Disable forum API server plugin in binary
 xmake f --server_plugin_forum_api=n
 ```
+
+## Build File Layout
+
+- Main build entry: `xmake.lua` (core framework + common plugin build options)
+- Plugin source layout: `src/plugins/<plugin_name>/...`
+- Optional plugin-specific xmake:
+  - only add `src/plugins/<plugin_name>/xmake.lua` when the plugin needs special build config
+- Theme runtime xmake:
+  - only add `themes/<theme>/xmake.lua` for themes that need runtime C++ extension compilation
+
+## C++ Template Runtime Extensions
+
+Template files stay pure HTML placeholders. Dynamic logic is implemented in standalone C++ files and registered through extension points.
+
+- Registry API:
+  - `src/core/theme_extension_registry.h`
+  - `src/core/theme_extension_registry.cpp`
+- Shared extension example:
+  - `src/themes/extensions/post_insight_extension.cpp`
+- Theme-specific extension examples:
+  - `themes/aurora/runtime.cpp`
+  - `themes/aurora/xmake.lua`
+
+Each runtime extension is compiled by xmake and applied at render time (build/serve), similar to EJS capabilities but with typed C++ code.
 
 ## Usage
 

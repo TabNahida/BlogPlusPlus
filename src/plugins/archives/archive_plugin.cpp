@@ -1,4 +1,4 @@
-#include "plugins/archive_plugin.h"
+#include "plugins/archives/archive_plugin.h"
 
 #include "core/site_builder.h"
 #include "core/utils.h"
@@ -42,4 +42,3 @@ void ArchivePlugin::apply(SiteBuilder& builder) {
 }
 
 }  // namespace blogpp
-

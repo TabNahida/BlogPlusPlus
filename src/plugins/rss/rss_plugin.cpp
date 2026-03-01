@@ -1,4 +1,4 @@
-#include "plugins/rss_plugin.h"
+#include "plugins/rss/rss_plugin.h"
 
 #include "core/site_builder.h"
 #include "core/utils.h"
@@ -44,4 +44,3 @@ void RssPlugin::apply(SiteBuilder& builder) {
 }
 
 }  // namespace blogpp
-

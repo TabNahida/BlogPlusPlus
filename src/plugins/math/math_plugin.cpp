@@ -1,4 +1,4 @@
-#include "plugins/math_plugin.h"
+#include "plugins/math/math_plugin.h"
 
 #include "core/site_builder.h"
 #include "plugins/plugin_utils.h"

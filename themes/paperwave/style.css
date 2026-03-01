@@ -160,6 +160,16 @@ body {
     font-size: 0.94rem;
 }
 
+.post-insight {
+    color: var(--accent);
+    font-size: 0.9rem;
+    margin: 0.3em 0 0.2em;
+}
+
+.lead {
+    font-size: 1.08rem;
+}
+
 .tag {
     color: var(--accent);
     text-decoration: none;

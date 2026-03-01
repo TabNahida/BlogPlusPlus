@@ -1,8 +1,12 @@
 #pragma once
 
+#include "core/theme_extension_registry.h"
+
 #include <filesystem>
+#include <memory>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 namespace blogpp {
 
@@ -22,7 +26,9 @@ public:
 
 private:
     std::filesystem::path dir_;
+    std::string theme_name_;
     std::unordered_map<std::string, std::string> templates_;
+    std::vector<std::unique_ptr<ThemeRenderExtension>> extensions_;
 };
 
 }  // namespace blogpp

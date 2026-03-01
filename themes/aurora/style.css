@@ -190,6 +190,12 @@ body {
     font-size: 0.88rem;
 }
 
+.post-insight {
+    color: var(--accent-2);
+    font-size: 0.86rem;
+    margin: 0.4em 0 0;
+}
+
 .summary,
 .desc,
 .kicker {

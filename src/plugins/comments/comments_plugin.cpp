@@ -1,4 +1,4 @@
-#include "plugins/comments_plugin.h"
+#include "plugins/comments/comments_plugin.h"
 
 #include "core/site_builder.h"
 #include "core/utils.h"
