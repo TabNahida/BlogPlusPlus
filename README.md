@@ -28,18 +28,21 @@ A modern C++ blog framework (XMake-based) with:
 Static plugins (build output):
 
 - `tags` -> `/tags/` and tag detail pages
+- `authors` -> `/authors/` and author detail pages (multi-author support)
 - `archives` -> `/archives/`
 - `rss` -> `/feed.xml`
 - `search` -> `/search/` + `/search-index.json`
 - `sitemap` -> `/sitemap.xml`
 - `math` -> KaTeX auto-render injection for markdown formulas
 - `comments` -> Post page comment system injection (Giscus/Disqus)
-- `forum` -> `/forum/` page with frontend client
+- `forum` -> `/forum/` + `/forum-data.json` (static read-only fallback)
+- `post_protect` -> encrypted post pages (password unlock UI)
 - `cloud` -> `/cloud/` + `/cloud-sync-manifest.json`
 
 Server plugins (serve mode):
 
-- `forum_api` -> `/api/forum/messages` (`GET`, `POST`)
+- `forum_api` -> `/api/forum/threads`, `/api/forum/posts`, `/api/forum/users` (+ legacy `/api/forum/messages`)
+- `post_auth` -> `/api/post/unlock` for protected article unlock in server mode (`route` + `password`, form-urlencoded)
 
 ## Themes
 
@@ -72,16 +75,21 @@ xmake f --plugin_cloud=n --plugin_forum=n
 
 # Disable forum API server plugin in binary
 xmake f --server_plugin_forum_api=n
+
+# Disable encrypted article plugin and unlock API
+xmake f --plugin_post_protect=n --server_plugin_post_auth=n
 ```
 
 ## Build File Layout
 
-- Main build entry: `xmake.lua` (core framework + common plugin build options)
+- Main build entry: `xmake.lua` (core framework build remains here)
 - Plugin source layout: `src/plugins/<plugin_name>/...`
-- Optional plugin-specific xmake:
-  - only add `src/plugins/<plugin_name>/xmake.lua` when the plugin needs special build config
-- Theme runtime xmake:
-  - only add `themes/<theme>/xmake.lua` for themes that need runtime C++ extension compilation
+- Multi-level xmake files are regular target-based project files:
+  - `src/plugins/forum/xmake.lua` -> `plugin_forum_bundle`
+  - `src/plugins/forum_api/xmake.lua` -> `server_plugin_forum_api_bundle`
+  - `src/plugins/post_protect/xmake.lua` -> `plugin_post_protect_bundle`
+  - `src/plugins/post_auth_api/xmake.lua` -> `server_plugin_post_auth_bundle`
+  - `themes/aurora/xmake.lua` -> `theme_aurora_runtime_bundle`
 
 ## C++ Template Runtime Extensions
 
@@ -125,8 +133,9 @@ base_url: http://localhost:4000
 theme: aurora
 output: public
 plugins: tags, archives, rss, search, sitemap, math, comments, forum, cloud
-server_plugins: forum_api
-nav: Home:/, Archives:/archives/, Tags:/tags/, Search:/search/, Forum:/forum/, Cloud:/cloud/
+plugins: tags, authors, archives, rss, search, sitemap, math, comments, forum, cloud, post_protect
+server_plugins: forum_api, post_auth
+nav: Home:/, Authors:/authors/, Archives:/archives/, Tags:/tags/, Search:/search/, Forum:/forum/, Cloud:/cloud/
 theme_palettes: ocean, sunset, forest
 background_image:
 server_cache_mb: 32
@@ -163,4 +172,4 @@ After `build`, files are generated under `public/`:
 - `/posts/<slug>/index.html`
 - `/about/index.html`
 - `/tags/`, `/archives/`, `/search/`, `/forum/`, `/cloud/`
-- `/feed.xml`, `/sitemap.xml`, `/search-index.json`, `/cloud-sync-manifest.json`
+- `/feed.xml`, `/sitemap.xml`, `/search-index.json`, `/cloud-sync-manifest.json`, `/forum-data.json`

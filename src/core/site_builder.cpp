@@ -249,12 +249,22 @@ void SiteBuilder::prepare_context() {
 
     site_.enabled_plugins = config_.get_list("plugins");
     if (site_.enabled_plugins.empty()) {
-        site_.enabled_plugins = {"tags", "archives", "rss", "search", "sitemap", "math", "comments", "forum", "cloud"};
+        site_.enabled_plugins = {"tags",
+                                 "authors",
+                                 "archives",
+                                 "rss",
+                                 "search",
+                                 "sitemap",
+                                 "math",
+                                 "comments",
+                                 "forum",
+                                 "cloud",
+                                 "post_protect"};
     }
 
     site_.enabled_server_plugins = config_.get_list("server_plugins");
     if (site_.enabled_server_plugins.empty()) {
-        site_.enabled_server_plugins = {"forum_api"};
+        site_.enabled_server_plugins = {"forum_api", "post_auth"};
     }
 
     loader_.load(project_root_ / "content", site_);
@@ -268,6 +278,7 @@ void SiteBuilder::render_core_pages() {
                 {"title", html_escape(post.title)},
                 {"date", html_escape(post.date)},
                 {"summary", html_escape(post.summary)},
+                {"authors", render_post_authors(post)},
                 {"tags", render_post_tags(post)},
                 {"content", post.html},
             });
@@ -493,7 +504,8 @@ std::string SiteBuilder::build_body_extra() const {
 
 std::string SiteBuilder::build_nav_html() const {
     const auto nav_value =
-        config_.get("nav", "Home:/,Archives:/archives/,Tags:/tags/,Search:/search/,Forum:/forum/,Cloud:/cloud/");
+        config_.get("nav",
+                    "Home:/,Authors:/authors/,Archives:/archives/,Tags:/tags/,Search:/search/,Forum:/forum/,Cloud:/cloud/");
     const auto entries = parse_csv(nav_value);
 
     std::vector<std::string> links;
@@ -516,6 +528,7 @@ std::string SiteBuilder::build_nav_html() const {
     if (links.empty()) {
         links = {
             "<a href=\"/\">Home</a>",
+            "<a href=\"/authors/\">Authors</a>",
             "<a href=\"/archives/\">Archives</a>",
             "<a href=\"/tags/\">Tags</a>",
             "<a href=\"/search/\">Search</a>",
@@ -538,11 +551,25 @@ std::string SiteBuilder::render_post_tags(const ContentItem& post) const {
     return join(items, " ");
 }
 
+std::string SiteBuilder::render_post_authors(const ContentItem& post) const {
+    if (post.authors.empty()) {
+        return "<span class=\"author muted\">Unknown</span>";
+    }
+    std::vector<std::string> items;
+    items.reserve(post.authors.size());
+    for (const auto& author : post.authors) {
+        const auto author_slug = slugify(author);
+        items.push_back("<a class=\"author\" href=\"/authors/" + author_slug + "/\">@" + html_escape(author) + "</a>");
+    }
+    return join(items, " ");
+}
+
 std::string SiteBuilder::render_post_card(const ContentItem& post) const {
     return "<article class=\"post-card\">"
            "<h2><a href=\"" +
            post.route + "\">" + html_escape(post.title) +
            "</a></h2><p class=\"meta\">" + html_escape(post.date) +
+           "</p><p class=\"meta\">By " + render_post_authors(post) +
            "</p><p class=\"summary\">" + html_escape(post.summary) +
            "</p><p class=\"tags\">" + render_post_tags(post) + "</p></article>";
 }

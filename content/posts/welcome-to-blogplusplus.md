@@ -1,6 +1,7 @@
 ---
 title: Welcome to BlogPlusPlus
 date: 2026-03-01
+authors: Alice, Bob
 tags: c++, framework, static-site
 summary: BlogPlusPlus is a C++ blog framework that supports static export, server mode, and plugins.
 ---
@@ -33,4 +34,3 @@ Try these commands:
 1. `xmake`
 2. `xmake run blogpp build`
 3. `xmake run blogpp serve 4000`
-

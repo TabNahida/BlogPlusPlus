@@ -42,6 +42,8 @@ public:
 
 }  // namespace
 
+void ensure_aurora_theme_runtime_linked() {}
+
 BLOGPP_REGISTER_THEME_EXTENSION("aurora", AuroraRuntimeExtension);
 
 }  // namespace blogpp

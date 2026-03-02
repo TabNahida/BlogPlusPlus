@@ -12,6 +12,8 @@ struct ContentItem {
     std::string slug;
     std::string date;
     std::string summary;
+    std::unordered_map<std::string, std::string> meta;
+    std::vector<std::string> authors;
     std::vector<std::string> tags;
     std::string markdown;
     std::string html;

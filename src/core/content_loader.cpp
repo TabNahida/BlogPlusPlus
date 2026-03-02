@@ -146,10 +146,20 @@ ContentItem ContentLoader::parse_markdown_file(const fs::path& file, bool is_pos
     const auto raw = read_text_file(file);
     const auto parsed = parse_front_matter(raw);
     item.markdown = parsed.body;
+    item.meta = parsed.meta;
     item.title = parsed.meta.count("title") ? parsed.meta.at("title") : file.stem().string();
     item.slug = parsed.meta.count("slug") ? slugify(parsed.meta.at("slug")) : slugify(item.title);
     item.date = parsed.meta.count("date") ? parsed.meta.at("date") : current_date();
     item.summary = parsed.meta.count("summary") ? parsed.meta.at("summary") : derive_summary(item.markdown);
+    if (parsed.meta.count("authors")) {
+        item.authors = parse_csv(parsed.meta.at("authors"));
+    } else if (parsed.meta.count("author")) {
+        item.authors = {trim(parsed.meta.at("author"))};
+    }
+    item.authors.erase(std::remove_if(item.authors.begin(),
+                                      item.authors.end(),
+                                      [](const std::string& name) { return trim(name).empty(); }),
+                       item.authors.end());
     item.tags = parsed.meta.count("tags") ? parse_csv(parsed.meta.at("tags")) : std::vector<std::string>{};
 
     if (item.slug.empty()) {

@@ -176,6 +176,12 @@ body {
     margin-right: 0.5em;
 }
 
+.author {
+    color: var(--accent);
+    text-decoration: none;
+    margin-right: 0.5em;
+}
+
 .post-content,
 .page-content {
     line-height: 1.76;
@@ -234,6 +240,68 @@ body {
     margin: 12px 0 20px;
 }
 
+.forum-layout {
+    display: grid;
+    grid-template-columns: minmax(220px, 0.95fr) 1.5fr;
+    gap: 16px;
+}
+
+.forum-sidebar,
+.forum-main {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 11px;
+    background: rgba(255, 255, 255, 0.6);
+}
+
+.post-protect-panel {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.65);
+}
+
+.post-protect-input,
+.post-protect-btn {
+    margin-top: 8px;
+}
+
+.post-protect-input {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 10px;
+    font: inherit;
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--text);
+    transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.post-protect-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(107, 76, 43, 0.16);
+}
+
+.post-protect-btn {
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    background: var(--accent);
+    color: #fff;
+    padding: 7px 13px;
+    cursor: pointer;
+    transition: transform 160ms ease, filter 160ms ease;
+}
+
+.post-protect-btn:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.05);
+}
+
+.post-protect-btn:active {
+    transform: translateY(0);
+}
+
 .forum-form input,
 .forum-form textarea,
 #search-input {
@@ -272,6 +340,10 @@ body {
     color: var(--muted);
 }
 
+.site-header {
+    animation: ink-drop 420ms ease;
+}
+
 @keyframes rise {
     from {
         opacity: 0;
@@ -283,10 +355,24 @@ body {
     }
 }
 
+@keyframes ink-drop {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 @media (max-width: 760px) {
     .site-header {
         flex-wrap: wrap;
         align-items: flex-start;
+    }
+    .forum-layout {
+        grid-template-columns: 1fr;
     }
 }
 

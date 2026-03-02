@@ -3,9 +3,9 @@ description: A modern C++ blog framework with static export and built-in server 
 base_url: http://localhost:4000
 theme: aurora
 output: public
-plugins: tags, archives, rss, search, sitemap, math, comments, forum, cloud
-server_plugins: forum_api
-nav: Home:/, Archives:/archives/, Tags:/tags/, Search:/search/, Forum:/forum/, Cloud:/cloud/
+plugins: tags, authors, archives, rss, search, sitemap, math, comments, forum, cloud, post_protect
+server_plugins: forum_api, post_auth
+nav: Home:/, Authors:/authors/, Archives:/archives/, Tags:/tags/, Search:/search/, Forum:/forum/, Cloud:/cloud/
 theme_palettes: ocean, sunset, forest
 background_image:
 server_cache_mb: 32

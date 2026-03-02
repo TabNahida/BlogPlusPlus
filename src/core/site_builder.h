@@ -67,6 +67,7 @@ private:
     std::string build_head_extra() const;
     std::string build_body_extra() const;
     std::string build_nav_html() const;
+    std::string render_post_authors(const ContentItem& post) const;
     std::string render_post_tags(const ContentItem& post) const;
     std::string render_post_card(const ContentItem& post) const;
 };
