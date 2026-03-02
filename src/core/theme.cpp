@@ -21,7 +21,7 @@ std::unordered_map<std::string, std::string> fallback_templates() {
          "<meta name=\"description\" content=\"{{description}}\" />"
          "<link rel=\"stylesheet\" href=\"/assets/style.css\" />{{head_extra}}</head>"
          "<body><header><h1><a href=\"/\">{{site_title}}</a></h1><nav>{{nav}}</nav></header>"
-         "<main>{{content}}</main><footer><small>{{year}} {{site_title}}</small></footer>{{body_extra}}</body></html>"},
+         "<main>{{content}}</main><footer><small>{{year}} {{site_title}}</small>{{footer_extra}}</footer>{{body_extra}}</body></html>"},
         {"home", "<section><h2>Latest Posts</h2><div class=\"cards\">{{posts}}</div></section>"},
         {"post",
          "<article class=\"post\"><h1>{{title}}</h1><p class=\"meta\">{{date}} {{tags}}</p>"
@@ -93,7 +93,8 @@ std::string ThemeEngine::wrap_layout(const std::string& page_title,
                                      const std::string& content_html,
                                      const std::string& description,
                                      const std::string& head_extra,
-                                     const std::string& body_extra) const {
+                                     const std::string& body_extra,
+                                     const std::string& footer_extra) const {
     return render(
         "layout",
         {
@@ -104,6 +105,7 @@ std::string ThemeEngine::wrap_layout(const std::string& page_title,
             {"description", html_escape(description)},
             {"head_extra", head_extra},
             {"body_extra", body_extra},
+            {"footer_extra", footer_extra},
             {"year", current_date().substr(0, 4)},
         });
 }

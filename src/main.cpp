@@ -39,6 +39,7 @@ fs::path find_project_root(fs::path start) {
 void print_help() {
     std::cout << "BlogPlusPlus (C++ + XMake)\n"
               << "Usage:\n"
+              << "  blogpp init                 Bootstrap config and content skeleton\n"
               << "  blogpp build                Build static site\n"
               << "  blogpp serve [port]         Build and run static server (default 4000)\n"
               << "  blogpp new <title>          Create a new post markdown file\n"
@@ -76,6 +77,9 @@ int main(int argc, char** argv) {
     const std::string cmd = argv[1];
     if (cmd == "build") {
         return builder.build() ? 0 : 1;
+    }
+    if (cmd == "init") {
+        return builder.init_project() ? 0 : 1;
     }
     if (cmd == "serve") {
         int port = 4000;

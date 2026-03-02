@@ -21,6 +21,7 @@ public:
 
     bool build();
     bool serve(int port);
+    bool init_project();
     bool create_post(const std::string& title);
 
     SiteContext& context();
@@ -67,6 +68,7 @@ private:
     std::string build_head_extra() const;
     std::string build_body_extra() const;
     std::string build_nav_html() const;
+    std::string build_footer_extra() const;
     std::string render_post_authors(const ContentItem& post) const;
     std::string render_post_tags(const ContentItem& post) const;
     std::string render_post_card(const ContentItem& post) const;

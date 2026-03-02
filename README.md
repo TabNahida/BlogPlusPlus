@@ -130,6 +130,9 @@ Each runtime extension is compiled by xmake and applied at render time (build/se
 ## Usage
 
 ```powershell
+# Bootstrap config + content skeleton
+xmake run blogpp init
+
 # Static export
 xmake run blogpp build
 
@@ -149,15 +152,40 @@ xmake run blogpp new "My New Post"
 
 ```yaml
 title: BlogPlusPlus
-description: A modern C++ blog framework with static export and built-in server mode.
-base_url: http://localhost:4000
+subtitle: A modern C++ blog framework with static export and built-in server mode.
+url: http://localhost:4000
 theme: aurora
-output: public
-plugins: tags, archives, rss, search, sitemap, math, comments, forum, cloud
-plugins: tags, authors, archives, rss, search, sitemap, math, comments, forum, cloud, post_protect
-server_plugins: forum_api, post_auth
-nav: Home:/, Authors:/authors/, Archives:/archives/, Tags:/tags/, Search:/search/, Forum:/forum/, Cloud:/cloud/
-theme_palettes: ocean, sunset, forest
+public_dir: public
+plugins:
+  - tags
+  - authors
+  - archives
+  - rss
+  - search
+  - sitemap
+  - math
+  - comments
+  - forum
+  - cloud
+  - post_protect
+server_plugins:
+  - forum_api
+  - post_auth
+menu:
+  Home: /
+  Authors: /authors/
+  Archives: /archives/
+  Tags: /tags/
+  Search: /search/
+  Forum: /forum/
+  Cloud: /cloud/
+social:
+  GitHub: https://github.com/
+  RSS: /feed.xml
+theme_palettes:
+  - ocean
+  - sunset
+  - forest
 background_image:
 server_cache_mb: 32
 comments_provider: giscus
@@ -170,6 +198,45 @@ cloud_provider: s3
 cloud_bucket:
 cloud_public_prefix:
 ```
+
+Config compatibility aliases (Hexo-style):
+
+- `url` -> `base_url`
+- `public_dir` -> `output`
+- `subtitle`/`tagline` -> `description`
+- `menu` -> `nav`
+- `theme_palettes`/`palettes`/`palette`
+
+Supported config formats:
+
+- Inline CSV: `plugins: tags, archives, rss`
+- YAML-like list:
+  - `plugins:`
+  - `  - tags`
+  - `  - archives`
+- YAML-like map:
+  - `menu:`
+  - `  Home: /`
+  - `  Archives: /archives/`
+
+## Hexo Gap & Roadmap
+
+Already improved in this iteration:
+
+- More flexible config parser (list/map/inline/comment handling)
+- Hexo-friendly key aliases (`url`, `public_dir`, `menu`, `subtitle`)
+- `menu.*` and `social.*` map parsing for nav/footer links
+- Config file fallback search: `blogpp.yml`, `_config.blogpp.yml`, `_config.yml`
+- `blogpp init` one-command project bootstrap
+
+Still missing vs mainstream Hexo themes (next priorities):
+
+- Category taxonomy and category pages
+- Pagination (`per_page`) with index/archive page navigation
+- Post TOC generation and heading anchor links
+- Post `cover`/`banner` pipeline and image optimization
+- i18n and date/time localization
+- Theme-level config inheritance (`themes/<theme>/_config.yml`)
 
 ## Markdown Front Matter
 

@@ -21,7 +21,8 @@ public:
                             const std::string& content_html,
                             const std::string& description,
                             const std::string& head_extra = "",
-                            const std::string& body_extra = "") const;
+                            const std::string& body_extra = "",
+                            const std::string& footer_extra = "") const;
     const std::filesystem::path& dir() const;
 
 private:
