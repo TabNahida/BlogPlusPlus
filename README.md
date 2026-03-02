@@ -64,6 +64,15 @@ xmake f -m release
 xmake
 ```
 
+Hexo-like switch configuration layout:
+
+- Switch catalog (plugins/server plugins/themes):
+  - `xmake/feature_switches.lua`
+- Switch processor/loader:
+  - `xmake/feature_switch_loader.lua`
+- Main build entry:
+  - `xmake.lua` (loads switch catalog + applies it)
+
 Build-time feature examples:
 
 ```powershell
@@ -84,12 +93,24 @@ xmake f --plugin_post_protect=n --server_plugin_post_auth=n
 
 - Main build entry: `xmake.lua` (core framework build remains here)
 - Plugin source layout: `src/plugins/<plugin_name>/...`
-- Multi-level xmake files are regular target-based project files:
+- Feature toggles are centralized (Hexo-style) and processed by loader:
+  - `xmake/feature_switches.lua`
+  - `xmake/feature_switch_loader.lua`
+- Multi-level xmake files are regular target-based project files and auto-discovered recursively:
   - `src/plugins/forum/xmake.lua` -> `plugin_forum_bundle`
   - `src/plugins/forum_api/xmake.lua` -> `server_plugin_forum_api_bundle`
   - `src/plugins/post_protect/xmake.lua` -> `plugin_post_protect_bundle`
   - `src/plugins/post_auth_api/xmake.lua` -> `server_plugin_post_auth_bundle`
   - `themes/aurora/xmake.lua` -> `theme_aurora_runtime_bundle`
+
+CI compatibility validation:
+
+- Workflow file: `.github/workflows/compatibility-ci.yml`
+- Trigger: `push`, `pull_request`, `workflow_dispatch`
+- Coverage:
+  - OS/arch matrix: Ubuntu x86_64, Windows x64, macOS x86_64, macOS arm64
+  - Build profiles: full features + minimal features
+  - API smoke: `/api/forum/users` + `/api/post/unlock`
 
 ## C++ Template Runtime Extensions
 

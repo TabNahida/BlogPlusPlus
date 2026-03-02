@@ -1,0 +1,102 @@
+name: compatibility-ci
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-matrix:
+    name: build-${{ matrix.name }}-${{ matrix.profile }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        profile: [full, minimal]
+        include:
+          - name: ubuntu-x86_64
+            os: ubuntu-latest
+            arch: x86_64
+            shell: bash
+          - name: windows-x64
+            os: windows-latest
+            arch: x64
+            shell: pwsh
+          - name: macos-x86_64
+            os: macos-13
+            arch: x86_64
+            shell: bash
+          - name: macos-arm64
+            os: macos-14
+            arch: arm64
+            shell: bash
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup xmake
+        uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: latest
+
+      - name: Configure (full)
+        if: matrix.profile == 'full'
+        shell: ${{ matrix.shell }}
+        run: xmake f -y -m release -a ${{ matrix.arch }}
+
+      - name: Configure (minimal)
+        if: matrix.profile == 'minimal'
+        shell: ${{ matrix.shell }}
+        run: >
+          xmake f -c -y -m release -a ${{ matrix.arch }}
+          --feature_server=n
+          --plugin_forum=n
+          --plugin_post_protect=n
+          --server_plugin_forum_api=n
+          --server_plugin_post_auth=n
+          --theme_aurora_runtime=n
+
+      - name: Build
+        shell: ${{ matrix.shell }}
+        run: xmake -r
+
+      - name: Static export smoke
+        if: matrix.profile == 'full'
+        shell: ${{ matrix.shell }}
+        run: xmake run blogpp build
+
+  api-smoke:
+    name: api-smoke-ubuntu
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup xmake
+        uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: latest
+
+      - name: Build
+        run: |
+          xmake f -y -m release -a x86_64
+          xmake -r
+
+      - name: API smoke test
+        run: |
+          set -euo pipefail
+          xmake run blogpp serve 4014 > /tmp/blogpp-serve.log 2>&1 &
+          BLOGPP_PID=$!
+          trap 'kill ${BLOGPP_PID} || true' EXIT
+          sleep 3
+          curl -fsS "http://127.0.0.1:4014/api/forum/users" >/dev/null
+          curl -fsS -X POST \
+            -H "Content-Type: application/x-www-form-urlencoded" \
+            -d "route=/posts/from-markdown-to-website-in-one-command/&password=demo123" \
+            "http://127.0.0.1:4014/api/post/unlock" >/dev/null
